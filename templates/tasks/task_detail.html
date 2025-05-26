@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}Task: {{ task.title }}{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex items-center animate-on-load">
+    <a href="{% url 'task_list' %}" class="text-primary-600 hover:text-primary-800 font-medium flex items-center">
+        <i class="fas fa-arrow-left mr-2"></i>
+        Back to Tasks
+    </a>
+</div>
+
+<div class="bg-white rounded-lg shadow-lg overflow-hidden animate-on-load">
+    <div class="{% if task.status == 'TODO' %}bg-gray-600{% elif task.status == 'IN_PROGRESS' %}bg-yellow-500{% elif task.status == 'MISSING' %}bg-red-600{% else %}bg-green-600{% endif %} px-6 py-4">
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-white">{{ task.title }}</h1>
+            <span class="px-3 py-1 rounded-full text-sm font-semibold 
+                {% if task.status == 'TODO' %}bg-gray-200 text-gray-800
+                {% elif task.status == 'IN_PROGRESS' %}bg-yellow-200 text-yellow-800
+                {% elif task.status == 'MISSING' %}bg-red-200 text-red-800
+                {% else %}bg-green-200 text-green-800{% endif %}">
+                {% if task.status == 'TODO' %}To Do
+                {% elif task.status == 'IN_PROGRESS' %}In Progress
+                {% elif task.status == 'MISSING' %}Missing Deadline
+                {% else %}Done{% endif %}
+            </span>
+        </div>
+    </div>
+    
+    <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-align-left text-primary-500 mr-2"></i>
+                        Description
+                    </h2>
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <p class="text-gray-700">
+                            {% if task.description %}
+                                {{ task.description|linebreaks }}
+                            {% else %}
+                                <span class="text-gray-400 italic">No description provided</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
+                        <i class="far fa-calendar-alt text-primary-500 mr-2"></i>
+                        Timeline
+                    </h2>
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <div class="flex flex-col space-y-3">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 w-8">
+                                    <i class="fas fa-plus-circle text-green-500"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Created</p>
+                                    <p class="text-sm text-gray-500">{{ task.created_at|date:"F j, Y, g:i a" }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 w-8">
+                                    <i class="fas fa-edit text-blue-500"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Last Updated</p>
+                                    <p class="text-sm text-gray-500">{{ task.updated_at|date:"F j, Y, g:i a" }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 w-8">
+                                    <i class="fas fa-flag-checkered text-red-500"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Due Date</p>
+                                    <p class="text-sm text-gray-500">{{ task.due_date|date:"F j, Y, g:i a" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-chart-line text-primary-500 mr-2"></i>
+                        Progress
+                    </h2>
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <div class="mb-2 flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-700">Task Status</span>
+                            <span class="text-sm font-medium text-gray-700">
+                                {% if task.status == 'TODO' %}0%{% elif task.status == 'IN_PROGRESS' %}50%{% else %}100%{% endif %}
+                            </span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="{% if task.status == 'TODO' %}bg-gray-400 w-0{% elif task.status == 'IN_PROGRESS' %}bg-yellow-400 w-1/2{% else %}bg-green-500 w-full{% endif %} h-2.5 rounded-full transition-all duration-500"></div>
+                        </div>
+                        
+                                                    <div class="mt-4 flex justify-between">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                    To Do
+                                </span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                    In Progress
+                                </span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    Missing
+                                </span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    Done
+                                </span>
+                            </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-cog text-primary-500 mr-2"></i>
+                        Actions
+                    </h2>
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <div class="flex flex-col space-y-2">
+                            {% if task.status != 'DONE' %}
+                            <form method="post" action="{% url 'task_complete' task.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200">
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    Mark as Completed
+                                </button>
+                            </form>
+                            {% endif %}
+                            
+                            {% if task.status == 'MISSING' %}
+                            <a href="{% url 'task_reschedule' task.id %}" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors duration-200">
+                                <i class="fas fa-calendar-plus mr-2"></i>
+                                Reschedule Task
+                            </a>
+                            {% endif %}
+                            
+                            <a href="{% url 'task_update' task.id %}" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">
+                                <i class="fas fa-edit mr-2"></i>
+                                Edit Task
+                            </a>
+                            
+                            <a href="{% url 'task_delete' task.id %}" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
+                                <i class="fas fa-trash-alt mr-2"></i>
+                                Delete Task
+                            </a>
+                            
+                            <button type="button" class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200">
+                                <i class="fas fa-share-alt mr-2"></i>
+                                Share Task
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if task.status != 'DONE' %}
+<div x-data="{ show: true }" x-init="setTimeout(() => show = false, 8000)" x-show="show" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="fixed bottom-4 right-4 max-w-sm bg-white rounded-lg shadow-lg border-l-4 border-primary-500 p-4 animate-on-load">
+    <div class="flex">
+        <div class="flex-shrink-0">
+            <i class="fas fa-lightbulb text-yellow-400 text-xl"></i>
+        </div>
+        <div class="ml-3">
+            <h3 class="text-sm font-medium text-gray-900">Quick Tip</h3>
+            <div class="mt-1 text-sm text-gray-500">
+                <p>Update the task status as you make progress. This helps in tracking your work effectively.</p>
+            </div>
+        </div>
+        <div class="ml-auto pl-3">
+            <div class="-mx-1.5 -my-1.5">
+                <button @click="show = false" class="inline-flex bg-white rounded-md p-1.5 text-gray-400 hover:text-gray-500 focus:outline-none">
+                    <span class="sr-only">Dismiss</span>
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %} 

@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if is_create %}Create Task{% elif is_reschedule %}Reschedule Task{% else %}Update Task{% endif %}{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex items-center animate-on-load">
+    <a href="{% url 'task_list' %}" class="text-primary-600 hover:text-primary-800 font-medium flex items-center">
+        <i class="fas fa-arrow-left mr-2"></i>
+        Back to Tasks
+    </a>
+</div>
+
+<div class="bg-white rounded-lg shadow-lg overflow-hidden animate-on-load">
+    <div class="{% if is_reschedule %}bg-orange-600{% else %}bg-primary-600{% endif %} px-6 py-4">
+        <h1 class="text-2xl font-bold text-white">
+            {% if is_create %}Create New Task
+            {% elif is_reschedule %}Reschedule Task
+            {% else %}Update Task{% endif %}
+        </h1>
+    </div>
+    
+    <div class="p-6">
+        <form method="post" x-data="{ 
+            formSubmitted: false,
+            validateForm() {
+                this.formSubmitted = true;
+                return true;
+            }
+        }" @submit="validateForm()">
+            {% csrf_token %}
+            
+            <div class="space-y-6">
+                <!-- Title Field -->
+                <div>
+                    <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        Title <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-tasks text-gray-400"></i>
+                        </div>
+                        {{ form.title }}
+                        <div x-show="formSubmitted && !$refs.titleInput.value" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <i class="fas fa-exclamation-circle text-red-500"></i>
+                        </div>
+                    </div>
+                    <p x-show="formSubmitted && !$refs.titleInput.value" class="mt-1 text-sm text-red-600">Title is required</p>
+                    {% if form.title.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.title.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <!-- Description Field -->
+                <div>
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        Description
+                    </label>
+                    <div class="mt-1">
+                        {{ form.description }}
+                    </div>
+                    {% if form.description.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.description.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <!-- Status and Due Date Fields -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.status.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                            Status <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative rounded-md shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-tag text-gray-400"></i>
+                            </div>
+                            {{ form.status }}
+                        </div>
+                        {% if form.status.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.status.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.due_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                            Due Date <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative rounded-md shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-calendar-alt text-gray-400"></i>
+                            </div>
+                            {{ form.due_date }}
+                            <div x-show="formSubmitted && !$refs.dueDateInput.value" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <i class="fas fa-exclamation-circle text-red-500"></i>
+                            </div>
+                        </div>
+                        <p x-show="formSubmitted && !$refs.dueDateInput.value" class="mt-1 text-sm text-red-600">Due date is required</p>
+                        {% if form.due_date.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.due_date.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Submit Buttons -->
+                <div class="flex justify-end space-x-3">
+                    <a href="{% url 'task_list' %}" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200">
+                        Cancel
+                    </a>
+                    <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200 transform hover:scale-105">
+                        <span x-show="!formSubmitted">
+                            {% if is_create %}Create Task
+                            {% elif is_reschedule %}Reschedule Task
+                            {% else %}Update Task{% endif %}
+                        </span>
+                        <span x-show="formSubmitted" class="flex items-center">
+                            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Saving...
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if not is_create %}
+<div class="fixed bottom-4 right-4 animate-on-load" style="animation-delay: 500ms;">
+    <a href="{% url 'task_delete' task.id %}" class="bg-red-100 hover:bg-red-200 text-red-800 font-semibold py-2 px-4 rounded-full inline-flex items-center shadow-md transition-all duration-200 transform hover:scale-105">
+        <i class="fas fa-trash-alt mr-2"></i>
+        <span>Delete Task</span>
+    </a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Apply Tailwind classes to form elements
+    document.addEventListener('DOMContentLoaded', function() {
+        // Title input
+        const titleInput = document.getElementById('{{ form.title.id_for_label }}');
+        titleInput.classList.add('pl-10', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-primary-500', 'focus:ring-primary-500', 'sm:text-sm', 'transition-colors', 'duration-200');
+        titleInput.setAttribute('x-ref', 'titleInput');
+        titleInput.placeholder = 'Enter task title';
+        
+        // Description textarea
+        const descInput = document.getElementById('{{ form.description.id_for_label }}');
+        descInput.classList.add('block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-primary-500', 'focus:ring-primary-500', 'sm:text-sm', 'transition-colors', 'duration-200');
+        descInput.placeholder = 'Enter task description';
+        
+        // Status select
+        const statusInput = document.getElementById('{{ form.status.id_for_label }}');
+        statusInput.classList.add('pl-10', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-primary-500', 'focus:ring-primary-500', 'sm:text-sm', 'transition-colors', 'duration-200');
+        
+        // Due date input
+        const dueDateInput = document.getElementById('{{ form.due_date.id_for_label }}');
+        dueDateInput.classList.add('pl-10', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-primary-500', 'focus:ring-primary-500', 'sm:text-sm', 'transition-colors', 'duration-200');
+        dueDateInput.setAttribute('x-ref', 'dueDateInput');
+    });
+    
+    // Add animation when form is submitted
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function() {
+        showLoading();
+    });
+</script>
+{% endblock %} 
