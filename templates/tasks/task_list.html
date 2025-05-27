@@ -18,61 +18,75 @@
         </div>
     </div>
 
-    <!-- Search and Filters -->
-    <div class="bg-white rounded-lg shadow-md p-4 mb-6 animate-on-load">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div class="flex w-full md:w-1/2 mb-4 md:mb-0">
-                <div class="relative flex-grow">
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <i class="fas fa-search text-gray-400"></i>
+    <!-- Professional Task Overview Panel -->
+    <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl shadow-2xl p-6 mb-8 animate-on-load transform hover:scale-105 transition-all duration-300">
+        <div class="flex flex-col lg:flex-row items-center justify-between">
+            <!-- Left Side - Welcome Message -->
+            <div class="text-white mb-6 lg:mb-0">
+                <h2 class="text-2xl lg:text-3xl font-bold mb-2 animate-pulse">
+                    <i class="fas fa-rocket mr-3"></i>Task Command Center
+                </h2>
+                <p class="text-lg opacity-90 font-medium">
+                    Manage your productivity with style and efficiency
+                </p>
+                <div class="flex items-center mt-3 space-x-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-calendar-check mr-2"></i>
+                        <span class="text-sm">{{ tasks|length }} Total Tasks</span>
                     </div>
-                    <input 
-                        type="text" 
-                        id="searchInput"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5" 
-                        placeholder="Search tasks by title or description..."
-                    >
+                    <div class="flex items-center">
+                        <i class="fas fa-clock mr-2"></i>
+                        <span class="text-sm" id="currentTime"></span>
+                    </div>
                 </div>
-                <button 
-                    id="searchButton"
-                    type="button"
-                    class="px-4 py-2.5 bg-primary-600 text-white font-medium text-sm rounded-r-lg border border-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 transition-colors duration-200 active:bg-primary-800"
-                >
-                    <i class="fas fa-search mr-1"></i> Search
-                </button>
             </div>
             
-            <div class="flex flex-wrap gap-2">
+            <!-- Right Side - Elegant Filters -->
+            <div class="flex flex-wrap gap-3">
                 <button 
                     data-filter="all"
-                    class="filter-btn px-4 py-2 text-sm font-medium rounded-md border bg-primary-100 text-primary-700 border-primary-500 transition-colors duration-200"
+                    class="filter-btn group relative px-6 py-3 text-sm font-semibold rounded-xl border-2 border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 transition-all duration-300 transform hover:scale-105"
                 >
-                    All <span class="ml-1 bg-blue-500 text-white text-xs rounded-full px-2 py-0.5">{{ tasks|length }}</span>
+                    <span class="relative z-10">All</span>
+                    <span class="absolute -top-2 -right-2 bg-blue-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">{{ tasks|length }}</span>
+                    <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </button>
                 <button 
                     data-filter="TODO"
-                    class="filter-btn px-4 py-2 text-sm font-medium rounded-md border bg-gray-100 text-gray-700 hover:bg-gray-200 border-transparent transition-colors duration-200"
+                    class="filter-btn group relative px-6 py-3 text-sm font-semibold rounded-xl border-2 border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 transition-all duration-300 transform hover:scale-105"
                 >
-                    To Do {% if todo_count %}<span class="ml-1 bg-gray-500 text-white text-xs rounded-full px-2 py-0.5">{{ todo_count }}</span>{% endif %}
+                    <span class="relative z-10">To Do</span>
+                    {% if todo_count %}<span class="absolute -top-2 -right-2 bg-gray-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">{{ todo_count }}</span>{% endif %}
+                    <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-gray-400 to-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </button>
                 <button 
                     data-filter="IN_PROGRESS"
-                    class="filter-btn px-4 py-2 text-sm font-medium rounded-md border bg-gray-100 text-gray-700 hover:bg-gray-200 border-transparent transition-colors duration-200"
+                    class="filter-btn group relative px-6 py-3 text-sm font-semibold rounded-xl border-2 border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 transition-all duration-300 transform hover:scale-105"
                 >
-                    In Progress {% if in_progress_count %}<span class="ml-1 bg-yellow-500 text-white text-xs rounded-full px-2 py-0.5">{{ in_progress_count }}</span>{% endif %}
+                    <span class="relative z-10">In Progress</span>
+                    {% if in_progress_count %}<span class="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">{{ in_progress_count }}</span>{% endif %}
+                    <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </button>
                 <button 
                     data-filter="DONE"
-                    class="filter-btn px-4 py-2 text-sm font-medium rounded-md border bg-gray-100 text-gray-700 hover:bg-gray-200 border-transparent transition-colors duration-200"
+                    class="filter-btn group relative px-6 py-3 text-sm font-semibold rounded-xl border-2 border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 transition-all duration-300 transform hover:scale-105"
                 >
-                    Done {% if completed_count %}<span class="ml-1 bg-green-500 text-white text-xs rounded-full px-2 py-0.5">{{ completed_count }}</span>{% endif %}
+                    <span class="relative z-10">Done</span>
+                    {% if completed_count %}<span class="absolute -top-2 -right-2 bg-green-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">{{ completed_count }}</span>{% endif %}
+                    <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-green-400 to-green-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </button>
-                <button 
-                    data-filter="MISSING"
-                    class="filter-btn px-4 py-2 text-sm font-medium rounded-md border bg-gray-100 text-gray-700 hover:bg-gray-200 border-transparent transition-colors duration-200"
-                >
-                    Missing {% if missing_count %}<span class="ml-1 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">{{ missing_count }}</span>{% endif %}
-                </button>
+
+            </div>
+        </div>
+        
+        <!-- Animated Progress Bar -->
+        <div class="mt-6">
+            <div class="flex justify-between text-white text-xs mb-2">
+                <span>Overall Progress</span>
+                <span id="progressPercent">0%</span>
+            </div>
+            <div class="w-full bg-white/20 rounded-full h-2 overflow-hidden">
+                <div id="progressBar" class="h-full bg-gradient-to-r from-yellow-400 via-green-400 to-blue-400 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
             </div>
         </div>
     </div>
@@ -153,7 +167,6 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time Left</th>
                             <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Complete</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
@@ -165,7 +178,7 @@
                             data-title="{{ task.title|escapejs }}"
                             data-description="{{ task.description|escapejs }}"
                             data-status="{{ task.status }}"
-                            data-due-date="{{ task.due_date|date:'c' }}">
+                            data-due-date="{{ task.due_date.isoformat }}">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div>
@@ -195,9 +208,6 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm {% if task.status == 'MISSING' %}text-red-600 font-semibold{% else %}text-gray-500{% endif %}">
                                 {{ task.due_date|date:"F j, Y, g:i a" }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm" id="countdown-{{ task.id }}">
-                                <span class="time-left-display">Loading...</span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
                                 <form method="post" action="{% url 'task_complete' task.id %}" class="inline" id="complete-form-{{ task.id }}">
@@ -254,115 +264,132 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get all tasks from the DOM
     const taskRows = document.querySelectorAll('.task-row');
     const filterButtons = document.querySelectorAll('.filter-btn');
-    const searchInput = document.getElementById('searchInput');
-    const searchButton = document.getElementById('searchButton');
     
-    // Function to calculate and display time left
-    function updateTimeLeft() {
-        const now = new Date();
-        
-        taskRows.forEach(row => {
-            const taskId = row.dataset.id;
-            const taskStatus = row.dataset.status;
-            const dueDateStr = row.dataset.dueDate;
-            const dueDate = new Date(dueDateStr);
-            const timeLeftElement = document.getElementById(`countdown-${taskId}`);
-            
-            if (!timeLeftElement) return;
-            
-            const timeDiff = dueDate.getTime() - now.getTime();
-            
-            // If task is already done
-            if (taskStatus === 'DONE') {
-                timeLeftElement.innerHTML = '<span class="text-green-600 font-semibold">Task Already Done</span>';
-                return;
-            }
-            
-            // If deadline has passed
-            if (timeDiff <= 0) {
-                timeLeftElement.innerHTML = '<span class="text-red-600 font-bold">LATE</span>';
-                return;
-            }
-            
-            // Calculate days, hours, minutes
-            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-            
-            let timeLeftText = '';
-            
-            if (days > 0) {
-                timeLeftText = `${days} day${days > 1 ? 's' : ''} and ${hours} hour${hours !== 1 ? 's' : ''} left`;
-            } else if (hours > 0) {
-                timeLeftText = `${hours} hour${hours > 1 ? 's' : ''} left`;
-            } else if (minutes > 0) {
-                timeLeftText = `${minutes} minute${minutes > 1 ? 's' : ''} left`;
-            } else {
-                timeLeftText = 'Less than a minute left';
-            }
-            
-            // Color coding based on time left
-            let colorClass = 'text-gray-600';
-            if (days === 0 && hours < 2) {
-                colorClass = 'text-red-600 font-semibold'; // Critical: less than 2 hours
-            } else if (days === 0 && hours < 12) {
-                colorClass = 'text-orange-600 font-medium'; // Warning: less than 12 hours
-            } else if (days < 1) {
-                colorClass = 'text-yellow-600'; // Caution: less than 1 day
-            }
-            
-            timeLeftElement.innerHTML = `<span class="${colorClass}">${timeLeftText}</span>`;
-        });
-    }
-    
-    // Update time left every minute
-    updateTimeLeft();
-    setInterval(updateTimeLeft, 60000);
+    // Professional Features
+    initializeCurrentTime();
+    initializeProgressBar();
+    initializeFilterAnimations();
+    initializeTableAnimations();
     
     // Set initial filter to All
     applyFilter('all');
     
-    // Add event listeners to filter buttons
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Remove active class from all buttons
-            filterButtons.forEach(btn => {
-                btn.classList.remove('bg-primary-100', 'text-primary-700', 'border-primary-500');
-                btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200', 'border-transparent');
+    // Real-time clock
+    function initializeCurrentTime() {
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', {
+                hour12: true,
+                hour: 'numeric',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            const timeElement = document.getElementById('currentTime');
+            if (timeElement) {
+                timeElement.textContent = timeString;
+            }
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+    }
+    
+    // Animated progress bar
+    function initializeProgressBar() {
+        const totalTasks = {{ tasks|length }};
+        const completedTasks = {{ completed_count }};
+        const progressPercent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        
+        setTimeout(() => {
+            document.getElementById('progressBar').style.width = progressPercent + '%';
+            document.getElementById('progressPercent').textContent = progressPercent + '%';
+        }, 500);
+    }
+    
+    // Enhanced filter animations
+    function initializeFilterAnimations() {
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active state from all buttons
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('bg-white/30', 'scale-110', 'ring-2', 'ring-white/50');
+                });
+                
+                // Add active state to clicked button
+                this.classList.add('bg-white/30', 'scale-110', 'ring-2', 'ring-white/50');
+                
+                // Add ripple effect
+                const ripple = document.createElement('div');
+                ripple.className = 'absolute inset-0 bg-white/20 rounded-xl animate-ping';
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+                
+                // Apply filter with animation
+                applyFilterWithAnimation(this.dataset.filter);
+            });
+        });
+    }
+    
+    // Table row animations
+    function initializeTableAnimations() {
+        taskRows.forEach((row, index) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                row.style.transition = 'all 0.5s ease-out';
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+            }, index * 100);
+            
+            // Add hover effects
+            row.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(8px)';
+                this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
             });
             
-            // Add active class to clicked button
-            this.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200', 'border-transparent');
-            this.classList.add('bg-primary-100', 'text-primary-700', 'border-primary-500');
-            
-            // Apply filter
-            applyFilter(this.dataset.filter);
+            row.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+                this.style.boxShadow = 'none';
+            });
         });
-    });
+    }
     
-         // Add event listener to search input
-     searchInput.addEventListener('input', filterTasks);
-     searchInput.addEventListener('keyup', function(e) {
-         if (e.key === 'Enter') {
-             searchButton.click();
-         }
-     });
-     
-     // Add event listener to search button
-     searchButton.addEventListener('click', function(e) {
-         e.preventDefault();
-         
-         // Add visual feedback
-         this.classList.add('animate-pulse');
-         setTimeout(() => {
-             this.classList.remove('animate-pulse');
-         }, 500);
-         
-         // Force filter tasks with current search query
-         filterTasks(true);
-     });
+    // Enhanced filter function with animations
+    function applyFilterWithAnimation(filter) {
+        let visibleCount = 0;
+        
+        taskRows.forEach((row, index) => {
+            const taskStatus = row.dataset.status;
+            const shouldShow = filter === 'all' || filter === taskStatus;
+            
+            if (shouldShow) {
+                visibleCount++;
+                setTimeout(() => {
+                    row.classList.remove('hidden');
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        row.style.opacity = '1';
+                        row.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 50);
+            } else {
+                row.style.opacity = '0';
+                row.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    row.classList.add('hidden');
+                }, 300);
+            }
+        });
+        
+        // Update progress bar for filtered view
+        setTimeout(() => {
+            updateProgressForFilter(filter);
+        }, 500);
+    }
     
-    // Function to apply filter
+    // Simple filter function (fallback)
     function applyFilter(filter) {
         taskRows.forEach(row => {
             const taskStatus = row.dataset.status;
@@ -372,53 +399,46 @@ document.addEventListener('DOMContentLoaded', function() {
                 row.classList.add('hidden');
             }
         });
-        
-        // Also apply search filter
-        filterTasks();
     }
     
-         
-    
-    // Function to filter tasks by search query
-    function filterTasks(force = false) {
-        const query = searchInput.value.toLowerCase().trim();
-        
-        // Show visual feedback when forced search
-        if (force) {
-            searchInput.classList.add('ring-2', 'ring-primary-500');
-            setTimeout(() => {
-                searchInput.classList.remove('ring-2', 'ring-primary-500');
-            }, 500);
-        }
-        
-        // Get current active filter
-        const activeFilter = document.querySelector('.filter-btn.bg-primary-100');
-        const currentFilter = activeFilter ? activeFilter.dataset.filter : 'all';
+    // Update progress bar based on current filter
+    function updateProgressForFilter(filter) {
+        let total = 0;
+        let completed = 0;
         
         taskRows.forEach(row => {
             const taskStatus = row.dataset.status;
-            const title = row.dataset.title.toLowerCase();
-            const description = row.dataset.description.toLowerCase();
-            
-            // Check if task matches current filter
-            const matchesFilter = currentFilter === 'all' || currentFilter === taskStatus;
-            
-            // Check if task matches search query
-            const matchesSearch = query === '' || title.includes(query) || description.includes(query);
-            
-            // Show task only if it matches both filter and search
-            if (matchesFilter && matchesSearch) {
-                row.classList.remove('hidden', 'hidden-by-search');
-            } else {
-                row.classList.add('hidden');
-                if (!matchesSearch) {
-                    row.classList.add('hidden-by-search');
-                } else {
-                    row.classList.remove('hidden-by-search');
+            if (filter === 'all' || filter === taskStatus) {
+                total++;
+                if (taskStatus === 'DONE') {
+                    completed++;
                 }
             }
         });
+        
+        const progressPercent = total > 0 ? Math.round((completed / total) * 100) : 0;
+        document.getElementById('progressBar').style.width = progressPercent + '%';
+        document.getElementById('progressPercent').textContent = progressPercent + '%';
     }
+    
+    // Add floating particles effect (optional eye candy)
+    function createFloatingParticles() {
+        const container = document.querySelector('.bg-gradient-to-r');
+        if (!container) return;
+        
+        for (let i = 0; i < 5; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'absolute w-2 h-2 bg-white/20 rounded-full animate-pulse';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 2 + 's';
+            particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            container.appendChild(particle);
+        }
+    }
+    
+    // Initialize floating particles
+    setTimeout(createFloatingParticles, 1000);
 });
 </script>
 {% endblock %} 
