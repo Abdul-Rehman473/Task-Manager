@@ -10,7 +10,20 @@
     </a>
 </div>
 
-<div x-data="{ countdown: 5, countdownActive: false }" class="bg-white rounded-lg shadow-lg overflow-hidden animate-on-load">
+<div x-data="{ 
+    countdown: 5, 
+    countdownActive: false,
+    startCountdown() {
+        this.countdownActive = true;
+        const timer = setInterval(() => {
+            this.countdown--;
+            if (this.countdown <= 0) {
+                clearInterval(timer);
+                document.querySelector('form').submit();
+            }
+        }, 1000);
+    }
+}" class="bg-white rounded-lg shadow-lg overflow-hidden animate-on-load">
     <div class="bg-red-600 px-6 py-4">
         <div class="flex items-center">
             <i class="fas fa-exclamation-triangle text-white mr-3 text-xl"></i>
@@ -65,7 +78,7 @@
                     Cancel
                 </a>
                 
-                <form method="post" @submit.prevent="countdownActive = true; setTimeout(() => { $el.submit() }, 5000)">
+                <form method="post" @submit.prevent="startCountdown()">
                     {% csrf_token %}
                     <button 
                         type="submit" 
@@ -98,7 +111,7 @@
 <!-- Animated Modal -->
 <div 
     x-data="{ show: false }" 
-    x-init="$watch('countdownActive', value => { if (value) { startCountdown(); show = true; } })"
+    x-init="$watch('countdownActive', value => { if (value) { show = true; } })"
     x-show="show"
     class="fixed inset-0 overflow-y-auto z-50"
     x-transition:enter="transition ease-out duration-300"
@@ -143,7 +156,7 @@
             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button 
                     type="button" 
-                    @click="show = false; countdownActive = false;"
+                    @click="show = false; countdownActive = false; countdown = 5; location.reload();"
                     class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm"
                 >
                     Cancel
@@ -154,21 +167,4 @@
 </div>
 {% endblock %}
 
-{% block extra_js %}
-<script>
-    function startCountdown() {
-        const countdownInterval = setInterval(function() {
-            if (Alpine.store('countdown') > 0) {
-                Alpine.store('countdown', Alpine.store('countdown') - 1);
-            } else {
-                clearInterval(countdownInterval);
-            }
-        }, 1000);
-    }
-    
-    document.addEventListener('alpine:init', () => {
-        Alpine.store('countdown', 5);
-        Alpine.store('countdownActive', false);
-    });
-</script>
-{% endblock %} 
+ 

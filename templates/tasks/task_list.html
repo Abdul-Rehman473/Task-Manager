@@ -45,33 +45,33 @@
             <div class="flex flex-wrap gap-2">
                 <button 
                     data-filter="all"
-                    class="filter-btn px-4 py-2 text-sm font-medium rounded-md border bg-gray-100 text-gray-700 hover:bg-gray-200 border-transparent transition-colors duration-200"
+                    class="filter-btn px-4 py-2 text-sm font-medium rounded-md border bg-primary-100 text-primary-700 border-primary-500 transition-colors duration-200"
                 >
-                    All
+                    All <span class="ml-1 bg-blue-500 text-white text-xs rounded-full px-2 py-0.5">{{ tasks|length }}</span>
                 </button>
                 <button 
                     data-filter="TODO"
-                    class="filter-btn px-4 py-2 text-sm font-medium rounded-md border bg-primary-100 text-primary-700 border-primary-500 transition-colors duration-200"
+                    class="filter-btn px-4 py-2 text-sm font-medium rounded-md border bg-gray-100 text-gray-700 hover:bg-gray-200 border-transparent transition-colors duration-200"
                 >
-                    To Do
+                    To Do {% if todo_count %}<span class="ml-1 bg-gray-500 text-white text-xs rounded-full px-2 py-0.5">{{ todo_count }}</span>{% endif %}
                 </button>
                 <button 
                     data-filter="IN_PROGRESS"
                     class="filter-btn px-4 py-2 text-sm font-medium rounded-md border bg-gray-100 text-gray-700 hover:bg-gray-200 border-transparent transition-colors duration-200"
                 >
-                    In Progress
+                    In Progress {% if in_progress_count %}<span class="ml-1 bg-yellow-500 text-white text-xs rounded-full px-2 py-0.5">{{ in_progress_count }}</span>{% endif %}
                 </button>
                 <button 
                     data-filter="DONE"
                     class="filter-btn px-4 py-2 text-sm font-medium rounded-md border bg-gray-100 text-gray-700 hover:bg-gray-200 border-transparent transition-colors duration-200"
                 >
-                    Done
+                    Done {% if completed_count %}<span class="ml-1 bg-green-500 text-white text-xs rounded-full px-2 py-0.5">{{ completed_count }}</span>{% endif %}
                 </button>
                 <button 
                     data-filter="MISSING"
                     class="filter-btn px-4 py-2 text-sm font-medium rounded-md border bg-gray-100 text-gray-700 hover:bg-gray-200 border-transparent transition-colors duration-200"
                 >
-                    Missing
+                    Missing {% if missing_count %}<span class="ml-1 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">{{ missing_count }}</span>{% endif %}
                 </button>
             </div>
         </div>
@@ -153,6 +153,7 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time Left</th>
                             <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Complete</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
@@ -163,7 +164,8 @@
                             data-id="{{ task.id }}"
                             data-title="{{ task.title|escapejs }}"
                             data-description="{{ task.description|escapejs }}"
-                            data-status="{{ task.status }}">
+                            data-status="{{ task.status }}"
+                            data-due-date="{{ task.due_date|date:'c' }}">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div>
@@ -193,6 +195,9 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm {% if task.status == 'MISSING' %}text-red-600 font-semibold{% else %}text-gray-500{% endif %}">
                                 {{ task.due_date|date:"F j, Y, g:i a" }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm" id="countdown-{{ task.id }}">
+                                <span class="time-left-display">Loading...</span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
                                 <form method="post" action="{% url 'task_complete' task.id %}" class="inline" id="complete-form-{{ task.id }}">
@@ -252,32 +257,70 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
     const searchButton = document.getElementById('searchButton');
     
-    // Check for missed deadlines every 10 seconds and refresh page if needed
-    setInterval(function() {
+    // Function to calculate and display time left
+    function updateTimeLeft() {
         const now = new Date();
-        let shouldRefresh = false;
         
         taskRows.forEach(row => {
+            const taskId = row.dataset.id;
             const taskStatus = row.dataset.status;
-            const dueDateStr = row.querySelector('td:nth-child(3)').textContent.trim();
+            const dueDateStr = row.dataset.dueDate;
             const dueDate = new Date(dueDateStr);
+            const timeLeftElement = document.getElementById(`countdown-${taskId}`);
             
-            // If deadline has passed and task is not complete or already missing
-            if (dueDate < now && (taskStatus === 'TODO' || taskStatus === 'IN_PROGRESS')) {
-                // Mark as visually overdue immediately
-                row.querySelector('td:nth-child(3)').classList.add('text-red-600', 'font-semibold');
-                shouldRefresh = true;
+            if (!timeLeftElement) return;
+            
+            const timeDiff = dueDate.getTime() - now.getTime();
+            
+            // If task is already done
+            if (taskStatus === 'DONE') {
+                timeLeftElement.innerHTML = '<span class="text-green-600 font-semibold">Task Already Done</span>';
+                return;
             }
+            
+            // If deadline has passed
+            if (timeDiff <= 0) {
+                timeLeftElement.innerHTML = '<span class="text-red-600 font-bold">LATE</span>';
+                return;
+            }
+            
+            // Calculate days, hours, minutes
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            
+            let timeLeftText = '';
+            
+            if (days > 0) {
+                timeLeftText = `${days} day${days > 1 ? 's' : ''} and ${hours} hour${hours !== 1 ? 's' : ''} left`;
+            } else if (hours > 0) {
+                timeLeftText = `${hours} hour${hours > 1 ? 's' : ''} left`;
+            } else if (minutes > 0) {
+                timeLeftText = `${minutes} minute${minutes > 1 ? 's' : ''} left`;
+            } else {
+                timeLeftText = 'Less than a minute left';
+            }
+            
+            // Color coding based on time left
+            let colorClass = 'text-gray-600';
+            if (days === 0 && hours < 2) {
+                colorClass = 'text-red-600 font-semibold'; // Critical: less than 2 hours
+            } else if (days === 0 && hours < 12) {
+                colorClass = 'text-orange-600 font-medium'; // Warning: less than 12 hours
+            } else if (days < 1) {
+                colorClass = 'text-yellow-600'; // Caution: less than 1 day
+            }
+            
+            timeLeftElement.innerHTML = `<span class="${colorClass}">${timeLeftText}</span>`;
         });
-        
-        // Refresh page if any task is overdue
-        if (shouldRefresh) {
-            window.location.reload();
-        }
-    }, 10000);
+    }
     
-    // Set initial filter to To Do
-    applyFilter('TODO');
+    // Update time left every minute
+    updateTimeLeft();
+    setInterval(updateTimeLeft, 60000);
+    
+    // Set initial filter to All
+    applyFilter('all');
     
     // Add event listeners to filter buttons
     filterButtons.forEach(button => {
@@ -338,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to filter tasks by search query
     function filterTasks(force = false) {
-        const query = searchInput.value.toLowerCase();
+        const query = searchInput.value.toLowerCase().trim();
         
         // Show visual feedback when forced search
         if (force) {
@@ -348,24 +391,31 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 500);
         }
         
+        // Get current active filter
+        const activeFilter = document.querySelector('.filter-btn.bg-primary-100');
+        const currentFilter = activeFilter ? activeFilter.dataset.filter : 'all';
+        
         taskRows.forEach(row => {
-            // Skip if already hidden by status filter
-            if (row.classList.contains('hidden') && 
-                !row.classList.contains('hidden-by-search')) {
-                return;
-            }
-            
-            // Remove previous search hiding
-            row.classList.remove('hidden-by-search');
-            
+            const taskStatus = row.dataset.status;
             const title = row.dataset.title.toLowerCase();
             const description = row.dataset.description.toLowerCase();
             
-            if (query === '' || title.includes(query) || description.includes(query)) {
-                row.classList.remove('hidden');
+            // Check if task matches current filter
+            const matchesFilter = currentFilter === 'all' || currentFilter === taskStatus;
+            
+            // Check if task matches search query
+            const matchesSearch = query === '' || title.includes(query) || description.includes(query);
+            
+            // Show task only if it matches both filter and search
+            if (matchesFilter && matchesSearch) {
+                row.classList.remove('hidden', 'hidden-by-search');
             } else {
                 row.classList.add('hidden');
-                row.classList.add('hidden-by-search');
+                if (!matchesSearch) {
+                    row.classList.add('hidden-by-search');
+                } else {
+                    row.classList.remove('hidden-by-search');
+                }
             }
         });
     }
