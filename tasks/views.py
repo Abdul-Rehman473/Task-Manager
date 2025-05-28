@@ -1,6 +1,7 @@
 # tasks/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
@@ -51,6 +52,7 @@ def task_detail_api(request, pk):
         return Response(status=204)
 
 # Frontend Views with Templates
+@login_required(login_url='login')
 def task_list(request):
     # Update the status of overdue tasks automatically
     tasks = Task.objects.all()
@@ -85,11 +87,13 @@ def task_list(request):
     }
     return render(request, 'tasks/task_list.html', context)
 
+@login_required(login_url='login')
 def task_detail(request, pk):
     task = get_object_or_404(Task, pk=pk)
     context = {'task': task}
     return render(request, 'tasks/task_detail.html', context)
 
+@login_required(login_url='login')
 def task_create(request):
     if request.method == 'POST':
         form = TaskForm(request.POST)
@@ -103,13 +107,23 @@ def task_create(request):
     context = {'form': form, 'is_create': True}
     return render(request, 'tasks/task_form.html', context)
 
+@login_required(login_url='login')
 def task_update(request, pk):
     task = get_object_or_404(Task, pk=pk)
     
     if request.method == 'POST':
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
-            form.save()
+            # Save without committing to make additional changes
+            updated_task = form.save(commit=False)
+            
+            # Update the status if it's changed
+            if updated_task.status != task.status:
+                updated_task.status = form.cleaned_data['status']
+            
+            # Save the task
+            updated_task.save()
+            
             messages.success(request, 'Task updated successfully!')
             return redirect('task_list')
     else:
@@ -118,6 +132,7 @@ def task_update(request, pk):
     context = {'form': form, 'task': task, 'is_create': False}
     return render(request, 'tasks/task_form.html', context)
 
+@login_required(login_url='login')
 def task_delete(request, pk):
     task = get_object_or_404(Task, pk=pk)
     
@@ -129,6 +144,7 @@ def task_delete(request, pk):
     context = {'task': task}
     return render(request, 'tasks/task_confirm_delete.html', context)
 
+@login_required(login_url='login')
 @require_POST
 def task_complete(request, pk):
     task = get_object_or_404(Task, pk=pk)
@@ -142,6 +158,7 @@ def task_complete(request, pk):
     else:
         return redirect('task_list')
 
+@login_required(login_url='login')
 def task_reschedule(request, pk):
     task = get_object_or_404(Task, pk=pk)
     

@@ -8,340 +8,145 @@
     <!-- Professional Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23667eea;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23764ba2;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='45' fill='url(%23grad)' stroke='white' stroke-width='2'/%3E%3Cpath d='M30 45 L45 60 L70 35' stroke='white' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
     
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="Professional Task Management System - Organize, Track, and Complete your tasks with style">
-    <meta name="keywords" content="task manager, productivity, project management, todo list">
-    <meta name="author" content="Task Manager Pro">
-    
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Task Manager Pro">
-    <meta property="og:description" content="Professional Task Management System">
-    <meta property="og:type" content="website">
-    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Alpine.js for animations -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
     <!-- Font Awesome Pro Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Google Fonts - Enhanced Typography -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Animate.css for enhanced animations -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     
     <style>
         body {
             font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f3f4f6 0%, #ffffff 100%);
         }
-        
-        /* Custom animations */
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
+
+        /* Logo Animation */
+        @keyframes rocketFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-5px) rotate(2deg); }
+            50% { transform: translateY(-8px) rotate(-2deg); }
+            75% { transform: translateY(-5px) rotate(1deg); }
         }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        .logo-hover {
+            animation: rocketFloat 3s ease-in-out infinite;
+            transition: all 0.3s ease;
         }
-        
-        .scale-in {
-            animation: scaleIn 0.3s ease-out;
+
+        .logo-hover:hover {
+            filter: brightness(1.2);
+            transform: scale(1.05);
         }
-        
-        @keyframes scaleIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+
+        /* Navbar Link Animations */
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
         }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 50%;
+            background: white;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
         }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+
+        .nav-link:hover::after {
+            width: 100%;
         }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #6366f1;
-            border-radius: 4px;
+
+        /* Button Hover Effects */
+        .hover-effect {
+            transition: all 0.3s ease;
+            transform: translateY(0);
         }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #4f46e5;
+
+        .hover-effect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
-        
-        /* Custom loader */
-        .loader {
-            border-top-color: #6366f1;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Add animate-on-load class to elements you want to animate on page load */
-        .animate-on-load {
-            opacity: 0;
-            animation: fadeIn 0.5s ease-in-out forwards;
-        }
-        
-        /* Lavish blob animations */
-        @keyframes blob {
-            0% { transform: translate(0px, 0px) scale(1); }
-            33% { transform: translate(30px, -50px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
-            100% { transform: translate(0px, 0px) scale(1); }
-        }
-        
-        .animate-blob {
-            animation: blob 7s infinite;
-        }
-        
-        .animation-delay-2000 {
-            animation-delay: 2s;
-        }
-        
-        .animation-delay-4000 {
-            animation-delay: 4s;
-        }
-        
-        /* Enhanced glassmorphism effects */
-        .glass {
-            background: rgba(255, 255, 255, 0.25);
+
+        /* Task Box Gradient */
+        .task-box {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Create Task Button */
+        .create-task-btn {
+            background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%);
+            transition: all 0.3s ease;
         }
         
-        /* Form input focus styles */
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        }
-        
-        /* Custom checkbox styling */
-        .form-checkbox {
-            appearance: none;
-            padding: 0;
-            color-adjust: exact;
-            display: inline-block;
-            vertical-align: middle;
-            background-origin: border-box;
-            user-select: none;
-            flex-shrink: 0;
-            height: 1rem;
-            width: 1rem;
-            background-color: #fff;
-            border-radius: 0.25rem;
-            border: 1px solid #d1d5db;
-        }
-        
-        .form-checkbox:checked {
-            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
-            border-color: transparent;
-            background-color: currentColor;
-            background-size: 100% 100%;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-        
-        .form-checkbox:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-            border-color: #6366f1;
+        .create-task-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(124, 58, 237, 0.2);
         }
     </style>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            200: '#c7d2fe',
-                            300: '#a5b4fc',
-                            400: '#818cf8',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                            800: '#3730a3',
-                            900: '#312e81',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    
-    {% block extra_css %}{% endblock %}
 </head>
-<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen relative overflow-x-hidden">
-    <!-- Ambient Background Elements -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none">
-        <div class="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div class="absolute top-40 left-40 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
-    </div>
-    <!-- Premium Navbar -->
-    <nav class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-2xl backdrop-blur-sm relative overflow-hidden" x-data="{ open: false }">
-        <!-- Animated Background Elements -->
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 animate-pulse"></div>
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 animate-pulse"></div>
-        
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="flex justify-between h-20">
+<body class="min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg h-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+            <div class="flex justify-between items-center h-full">
                 <div class="flex items-center">
-                    <div class="flex-shrink-0 flex items-center group">
-                        <div class="relative">
-                            <div class="absolute -inset-2 bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-200"></div>
-                            <div class="relative">
-                                <i class="fas fa-rocket text-3xl mr-3 transform group-hover:scale-110 transition-transform duration-300 animate-bounce"></i>
-                            </div>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="font-black text-2xl bg-gradient-to-r from-white to-yellow-200 bg-clip-text text-transparent">Task Manager</span>
-                            <span class="text-xs font-medium text-white/80 -mt-1">Professional Edition</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hidden md:flex items-center space-x-6">
-                    <a href="{% url 'task_list' %}" class="group relative px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-105">
-                        <div class="absolute inset-0 bg-white/10 rounded-xl backdrop-blur-sm group-hover:bg-white/20 transition-all duration-300"></div>
-                        <div class="relative flex items-center">
-                            <i class="fas fa-tachometer-alt mr-2 group-hover:rotate-12 transition-transform duration-300"></i>
-                            Dashboard
-                        </div>
-                    </a>
-                    <a href="{% url 'task_create' %}" class="group relative px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-105">
-                        <div class="absolute inset-0 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute inset-0 bg-white/10 rounded-xl backdrop-blur-sm group-hover:bg-transparent transition-all duration-300"></div>
-                        <div class="relative flex items-center">
-                            <i class="fas fa-plus-circle mr-2 group-hover:rotate-180 transition-transform duration-500"></i>
-                            Create Task
-                        </div>
+                    <a href="/" class="flex items-center logo-hover">
+                        <i class="fas fa-rocket text-3xl mr-2"></i>
+                        <span class="font-bold text-2xl">Task Manager</span>
                     </a>
                 </div>
                 
-                <!-- Mobile menu button -->
-                <div class="md:hidden flex items-center">
-                    <button @click="open = !open" class="text-white hover:text-gray-200 focus:outline-none">
-                        <svg class="h-6 w-6" x-show="!open" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                        <svg class="h-6 w-6" x-show="open" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
+                <div class="flex items-center space-x-8">
+                    <a href="{% url 'task_list' %}" class="nav-link px-4 py-2 rounded-md text-base font-medium hover:text-white/90">
+                        <i class="fas fa-tasks mr-2"></i>Tasks
+                    </a>
+                    <a href="{% url 'task_create' %}" class="nav-link px-4 py-2 rounded-md text-base font-medium hover:text-white/90">
+                        <i class="fas fa-plus mr-2"></i>Create Task
+                    </a>
+                    
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'profile' %}" class="nav-link flex items-center px-4 py-2 rounded-md text-base font-medium hover:text-white/90">
+                        <i class="fas fa-user mr-2"></i>
+                        {{ user.username }}
+                    </a>
+                    <form method="post" action="{% url 'logout' %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-white/10">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                        </button>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="nav-link px-4 py-2 rounded-md text-base font-medium hover:text-white/90">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login
+                    </a>
+                    {% endif %}
                 </div>
-            </div>
-        </div>
-        
-        <!-- Mobile menu -->
-        <div class="md:hidden" x-show="open" style="display: none;">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="{% url 'task_list' %}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-700 transition-colors duration-200">
-                    Dashboard
-                </a>
-                <a href="{% url 'task_create' %}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-primary-700 transition-colors duration-200">
-                    Add Task
-                </a>
             </div>
         </div>
     </nav>
-    
-    <!-- Premium Page Content -->
-    <main class="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8 relative z-10">
+
+    <!-- Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         {% if messages %}
-            <div class="px-4 py-2 mb-6">
-                {% for message in messages %}
-                    <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" 
-                        class="fade-in rounded-md p-4 mb-3 
-                        {% if message.tags == 'success' %}bg-green-100 border-l-4 border-green-500 text-green-700{% endif %}
-                        {% if message.tags == 'error' %}bg-red-100 border-l-4 border-red-500 text-red-700{% endif %}
-                        {% if message.tags == 'info' %}bg-blue-100 border-l-4 border-blue-500 text-blue-700{% endif %}
-                        {% if message.tags == 'warning' %}bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700{% endif %}">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                {% if message.tags == 'success' %}<i class="fas fa-check-circle mr-2"></i>{% endif %}
-                                {% if message.tags == 'error' %}<i class="fas fa-exclamation-circle mr-2"></i>{% endif %}
-                                {% if message.tags == 'info' %}<i class="fas fa-info-circle mr-2"></i>{% endif %}
-                                {% if message.tags == 'warning' %}<i class="fas fa-exclamation-triangle mr-2"></i>{% endif %}
-                                <p>{{ message }}</p>
-                            </div>
-                            <button @click="show = false" class="text-gray-500 hover:text-gray-700 focus:outline-none">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                {% endfor %}
+        <div class="px-4 mb-6">
+            {% for message in messages %}
+            <div class="rounded-lg p-4 mb-4 {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'error' %}bg-red-100 text-red-700{% endif %} hover-effect">
+                {{ message }}
             </div>
+            {% endfor %}
+        </div>
         {% endif %}
         
-        <div class="px-4 py-6 sm:px-0">
-            {% block content %}{% endblock %}
-        </div>
+        {% block content %}{% endblock %}
     </main>
-    
-    <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 py-6">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0">
-                    <p class="text-gray-600">© 2025 Task Manager. All rights reserved.</p>
-                </div>
-                <div class="flex space-x-4">
-                    <a href="#" class="text-gray-500 hover:text-primary-600 transition-colors duration-200">
-                        <i class="fab fa-github text-xl"></i>
-                    </a>
-                    <a href="#" class="text-gray-500 hover:text-primary-600 transition-colors duration-200">
-                        <i class="fab fa-twitter text-xl"></i>
-                    </a>
-                    <a href="#" class="text-gray-500 hover:text-primary-600 transition-colors duration-200">
-                        <i class="fab fa-linkedin text-xl"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
-    
-    <!-- Loading indicator -->
-    <div id="loading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white p-6 rounded-lg shadow-xl scale-in flex items-center">
-            <div class="loader w-8 h-8 rounded-full border-4 border-gray-200 mr-4"></div>
-            <p class="text-gray-700 font-medium">Loading...</p>
-        </div>
-    </div>
-    
-    <script>
-        function showLoading() {
-            document.getElementById('loading').classList.remove('hidden');
-        }
-        
-        function hideLoading() {
-            document.getElementById('loading').classList.add('hidden');
-        }
-        
-        // Add fade-in animation to page elements
-        document.addEventListener('DOMContentLoaded', function() {
-            const elements = document.querySelectorAll('.animate-on-load');
-            elements.forEach((el, index) => {
-                setTimeout(() => {
-                    el.style.opacity = '1';
-                }, index * 100);
-            });
-        });
-    </script>
-    
-    {% block extra_js %}{% endblock %}
 </body>
 </html> 

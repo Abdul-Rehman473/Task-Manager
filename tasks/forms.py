@@ -6,12 +6,25 @@ class TaskForm(forms.ModelForm):
         model = Task
         fields = ['title', 'description', 'status', 'due_date']
         widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm transition-colors duration-200',
+                'placeholder': 'Enter task title'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm transition-colors duration-200',
+                'placeholder': 'Enter task description',
+                'rows': 3
+            }),
+            'status': forms.Select(attrs={
+                'class': 'pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm transition-colors duration-200'
+            }),
             'due_date': forms.DateTimeInput(
-                attrs={'type': 'datetime-local'},
+                attrs={
+                    'type': 'datetime-local',
+                    'class': 'pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm transition-colors duration-200'
+                },
                 format='%Y-%m-%dT%H:%M'
             ),
-            'description': forms.Textarea(attrs={'rows': 3}),
-            'status': forms.Select(attrs={'class': 'form-select'}),
         }
     
     def __init__(self, *args, **kwargs):

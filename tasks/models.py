@@ -22,9 +22,18 @@ class Task(models.Model):
         return self.due_date < timezone.now() and self.status != 'DONE'
     
     def save(self, *args, **kwargs):
-        # Check if deadline is missed and update status accordingly
-        if self.due_date < timezone.now() and self.status not in ['DONE', 'MISSING']:
-            self.status = 'MISSING'
+        # Only check for missing deadline if the task is not being completed
+        if self.status not in ['DONE', 'MISSING']:
+            if self.due_date < timezone.now():
+                self.status = 'MISSING'
+        
+        # If this is an existing task (has an ID) and the status is being changed
+        if self.pk is not None:
+            old_task = Task.objects.get(pk=self.pk)
+            if old_task.status != self.status:
+                # Update the updated_at timestamp
+                self.updated_at = timezone.now()
+        
         super().save(*args, **kwargs)
     
     def __str__(self):
